@@ -14,15 +14,15 @@ tokenizer = AutoTokenizer.from_pretrained("Sakonii/distilbert-base-nepali")
 nepali_model = AutoModel.from_pretrained("Sakonii/distilbert-base-nepali")
 
 def extract_text_from_scanned_pdf(pdf_path, language):
-    # Initialize the EasyOCR reader for the specified language
+
     reader = easyocr.Reader([language])
 
     try:
         text = ''
-        # Open the PDF file
+
         pdf_document = fitz.open(pdf_path)
 
-        # Iterate through each page of the PDF
+
         for page_num in range(pdf_document.page_count):
             page = pdf_document[page_num]
 
@@ -30,72 +30,72 @@ def extract_text_from_scanned_pdf(pdf_path, language):
             pix = page.get_pixmap()
             img_bytes = pix.samples
 
-            # Create a numpy array from the image bytes
+
             img_array = np.frombuffer(img_bytes, dtype=np.uint8).reshape(pix.height, pix.width, -1)
 
-            # Extract text from the image using EasyOCR
+
             page_text = reader.readtext(img_array)
 
-            # Concatenate the text from this page to the overall text
+
             text += ' '.join([item[1] for item in page_text]) + '\n'
 
-        return text.strip()  # Ensure the text is a string and remove leading/trailing whitespaces
+        return text.strip() 
     except Exception as e:
         return str(e)
     
 def read_text_from_pillow_image(image, language):
-    # Initialize the EasyOCR reader for the specified language
+
     reader = easyocr.Reader([language])
 
     try:
-        # Convert PIL Image to bytes
+
         img_bytes = io.BytesIO()
         image.save(img_bytes, format='PNG')
         img_bytes = img_bytes.getvalue()
 
-        # Read text from the image
+
         result = reader.readtext(img_bytes)
 
-        # Extract and return the text
+
         text = '\n'.join([item[1] for item in result])
-        return text.strip()  # Ensure the text is a string and remove leading/trailing whitespaces
+        return text.strip()  
     except Exception as e:
         return str(e)
 
     
 def summarize_text(model, tokenizer, text, n_clusters):
-    # Check if the text is already a string, or convert if necessary
+
     if not isinstance(text, str):
         text = str(text)
 
-    # Split text into sentences
+
     sentences = re.split(r'[।?\.।\?।।]', text)
     sentences = [sentence.strip() for sentence in sentences if sentence]
 
-    # Generate sentence embeddings
+
     embeddings = []
     for sentence in sentences:
-        # Encode the sentence using the tokenizer
+
         inputs = tokenizer(sentence, return_tensors="pt", return_attention_mask=True)
         input_ids = inputs["input_ids"]
 
-        # Get the model output
+
         with torch.no_grad():
             output = model(input_ids)
 
-        # Extract the embedding from the output
+
         embedding = output.last_hidden_state[:, 0, :].squeeze()
         embeddings.append(embedding.tolist())
 
-    # Check if the number of clusters is greater than the number of samples
+
     if n_clusters > len(embeddings):
         n_clusters = len(embeddings)
 
-    # Apply KMeans clustering
+
     kmeans = KMeans(n_clusters=n_clusters, n_init=10)
     kmeans.fit(embeddings)
 
-    # Extract one sentence per cluster as summary
+
     summary_sentences = []
     for cluster_index in range(kmeans.n_clusters):
         sentence_indices = np.where(kmeans.labels_ == cluster_index)[0]
@@ -108,19 +108,18 @@ def summarize_text(model, tokenizer, text, n_clusters):
 
     
 @st.cache_data
-#function to display the PDF of a given file 
 def displayPDF(file):
-    # Opening file from file path
+
     with open(file, "rb") as f:
         base64_pdf = base64.b64encode(f.read()).decode('utf-8')
 
-    # Embedding PDF in HTML
+
     pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
 
-    # Displaying File
+
     st.markdown(pdf_display, unsafe_allow_html=True)
     
-# Streamlit code
+
 st.set_page_config(layout="wide")
 
 def main():
@@ -146,7 +145,7 @@ def main():
                     pdf_view = displayPDF(filepath)
                 with col2:
                     text = extract_text_from_scanned_pdf(filepath, 'ne')
-                    # Display the extracted text
+
                     st.info("Extracted Text:")
                     st.success(text)
                     
@@ -186,7 +185,7 @@ def main():
                     st.image(image, caption='Uploaded Image.', use_column_width=True)
                 with col2:
                     text = read_text_from_pillow_image(image, language)
-                    # Display the extracted text
+
                     st.info("Extracted Text:")
                     st.success(text)
                     
