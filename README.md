@@ -3,15 +3,6 @@
 
 This is a Streamlit web application for extractive document summarization of Nepali language. It allows users to upload PDF files, text, or images, and generates a summary of the content using natural language processing techniques.
 
-
-
-## Features
-
-- Summarize text from PDF files, text input, or images.
-- Language support for Nepali (other languages can be supported with appropriate models).
-- Adjustable number of clusters for summarization.
-- Visual display of uploaded files and extracted text.
-
 ## Approach
 
 ### Data Extraction
