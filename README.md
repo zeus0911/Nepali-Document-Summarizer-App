@@ -31,6 +31,15 @@ This is a Streamlit web application for extractive document summarization of Nep
 
 - The application currently supports text summarization for Nepali language documents. However, it can be extended to support other languages by using appropriate pre-trained language models.
 
+  #### PDF Summarization
+![PDF Summarization](demo_images/pdf_summarization.png)
+*Description: Interface for summarizing text extracted from a PDF file.*
+
+#### Text Summarization
+![Text Summarization](demo_images/text_summarization.png)
+*Description: Interface for summarizing user-provided text.*
+
+
 
 ## Installation
 
