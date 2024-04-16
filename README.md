@@ -32,6 +32,30 @@ This is a Streamlit web application for extractive document summarization of Nep
 - The application currently supports text summarization for Nepali language documents. However, it can be extended to support other languages by using appropriate pre-trained language models.
 
 
+## Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone 
+    cd Nepali-Document-Summarization-App
+    ```
+
+2. Install the required packages:
+
+    ```bash
+    pip install -r requirement.txt
+    ```
+
+## Usage
+
+1. Run the Streamlit app:
+
+    ```bash
+    streamlit run eng.py
+    ```
+
+
 
 
 
